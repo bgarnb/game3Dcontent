@@ -44,13 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
     raccoonAnchor.onTargetLost = () => {
       audio1.pause();
     }
-    //animation
-    const mixer1 = new THREE.AnimationMixer(gltf.scene);
-    const action1 = mixer.clipAction(gltf.animations[0]);
-    action1.play();
-
-    const clock1 = new THREE.Clock();
-
+   
     //second digital content (3D model with audio)
 
     const bearAnchor = mindarThree.addAnchor(1);
