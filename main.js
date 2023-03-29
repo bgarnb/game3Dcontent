@@ -1,4 +1,4 @@
-import {loadGLTF, loadAudio, loadVideo} from "./libs/loader.js";
+import {loadGLTF, loadAudio} from "./libs/loader.js";
 const THREE = window.MINDAR.IMAGE.THREE;
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -18,34 +18,39 @@ document.addEventListener('DOMContentLoaded', () => {
     raccoon.scene.scale.set(0.1, 0.1, 0.1);
     raccoon.scene.position.set(0, -0.4, 0);
 
-    const bear = await loadGLTF('./assets/models/musicband-bear/scene.gltf');
-    bear.scene.scale.set(0.1, 0.1, 0.1);
-    bear.scene.position.set(0, -0.4, 0);
-
-    //first digital content (3D model with audio)
     const raccoonAnchor = mindarThree.addAnchor(0);
     raccoonAnchor.group.add(raccoon.scene);
 
-    const audioClip1 = await loadAudio('./assets/sounds/musicband-background.mp3');
+    const mixer = new THREE.AnimationMixer(raccoon.scene);
+    const action = mixer.clipAction(raccoon.animations[0]);
+    action.play();
 
-    const listener1 = new THREE.AudioListener();
-    camera.add(listener1);
+    const clock = new THREE.Clock();
 
-    const audio1 = new THREE.PositionalAudio(listener1);
-    raccoonAnchor.group.add(audio1);
 
-    audio1.setBuffer(audioClip1);
-    audio1.setRefDistance(100);
-    audio1.setLoop(true);
+    //const audioClip1 = await loadAudio('./assets/sounds/musicband-background.mp3');
 
-    raccoonAnchor.onTargetFound = () => {
-      audio1.play();
-    }
-    raccoonAnchor.onTargetLost = () => {
-      audio1.pause();
-    }
-   
+    //const listener1 = new THREE.AudioListener();
+    //camera.add(listener1);
+
+    //const audio1 = new THREE.PositionalAudio(listener1);
+    //raccoonAnchor.group.add(audio1);
+
+    //audio1.setBuffer(audioClip1);
+    //audio1.setRefDistance(100);
+    //audio1.setLoop(true);
+
+    //raccoonAnchor.onTargetFound = () => {
+      //audio1.play();
+    //}
+    //raccoonAnchor.onTargetLost = () => {
+      //audio1.pause();
+    //}
+
     //second digital content (3D model with audio)
+    const bear = await loadGLTF('./assets/models/musicband-bear/scene.gltf');
+    bear.scene.scale.set(0.1, 0.1, 0.1);
+    bear.scene.position.set(0, -0.4, 0);
 
     const bearAnchor = mindarThree.addAnchor(1);
     bearAnchor.group.add(bear.scene);
@@ -69,17 +74,19 @@ document.addEventListener('DOMContentLoaded', () => {
       audio2.pause();
     }
 
-    
+
 //start the experience
     await mindarThree.start();
     renderer.setAnimationLoop(() => {
+      
+      //next three lines work for rotating the raccoon scene
+      const delta = clock.getDelta();
+      raccoon.scene.rotation.set(0, raccoon.scene.rotation.y+delta, 0);
+      mixer.update(delta);
+
+
       renderer.render(scene, camera);
     });
   }
-  //to πλήκτρο start δουλεύει για μια φορά μόνο
-  //const startButton = document.createElement("button");
-  //startButton.textContent = "Start";
-  //startButton.addEventListener("click", start);
-  //document.body.appendChild(startButton);
-  start();
+    start();
 });
