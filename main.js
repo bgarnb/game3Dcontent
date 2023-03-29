@@ -22,12 +22,6 @@ document.addEventListener('DOMContentLoaded', () => {
     bear.scene.scale.set(0.1, 0.1, 0.1);
     bear.scene.position.set(0, -0.4, 0);
 
-    const video = await loadVideo("./assets/videos/sintel/sintel.mp4");
-    const texture = new THREE.VideoTexture(video);
-    const geometry = new THREE.PlaneGeometry(1, 204/480);
-    const material = new THREE.MeshBasicMaterial({map: texture});
-    const plane = new THREE.Mesh(geometry, material);
-
     //first digital content (3D model with audio)
     //comment
 
@@ -77,19 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
       audio2.pause();
     }
 
-    // third digital content (video)
-    const anchor = mindarThree.addAnchor(2);
-    anchor.group.add(plane);
-
-    anchor.onTargetFound = () => {
-      video.play();
-    }
-    anchor.onTargetLost = () => {
-      video.pause();
-    }
-    video.addEventListener( 'play', () => {
-      video.currentTime = 6;
-    });
+    
 //start the experience
     await mindarThree.start();
     renderer.setAnimationLoop(() => {
